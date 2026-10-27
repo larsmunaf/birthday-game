@@ -39,6 +39,7 @@ $('#start').addEventListener('click', () => {
   canvas.requestPointerLock?.();
 });
 let started = false;
+$('#restart').addEventListener('click', () => location.reload());
 
 function resize() {
   const w = innerWidth, h = innerHeight;

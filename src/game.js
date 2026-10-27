@@ -6,7 +6,6 @@ import { CONFIG, FAMILY } from './config.js';
 
 const TALK_DIST = 3.2;
 const HUG_TIME = 2.8;
-const BUBBLE_TIME = 6;
 
 const $ = (s) => document.querySelector(s);
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -23,7 +22,7 @@ export class Game {
       world.addCollider(npc.position.x, npc.position.z, 0.7);
       npc.tag = this.makeLabel('nametag', def.name);
       npc.bubble = this.makeLabel('bubble', def.hugText);
-      npc.bubbleTimer = 0;
+      npc.showBubble = false; // once solved, the heart bubble stays for good
       return npc;
     });
 
@@ -160,10 +159,11 @@ export class Game {
     p.z += (npc.position.z + (dz / d) * 1.2 - p.z) * k;
     this.player.turnTowards(Math.atan2(-dx, -dz), dt);
 
-    if (this.hugTime > 0.4 && npc.bubbleTimer <= 0) npc.bubbleTimer = BUBBLE_TIME;
+    if (this.hugTime > 0.4) npc.showBubble = true;
 
     if (this.hugTime >= HUG_TIME) {
       npc.solved = true;
+      npc.tag.classList.add('solved');
       npc.pose = null;
       this.player.pose = null;
       this.player.frozen = false;
@@ -227,10 +227,8 @@ export class Game {
     const head = new THREE.Vector3();
     for (const npc of this.npcs) {
       npc.headPosition(head);
-      npc.bubbleTimer = Math.max(0, npc.bubbleTimer - dt);
-      const showBubble = npc.bubbleTimer > 0;
-      this.placeLabel(npc.tag, head, 0, !showBubble);
-      this.placeLabel(npc.bubble, head, 0, showBubble);
+      this.placeLabel(npc.tag, head, 0, true);
+      this.placeLabel(npc.bubble, head, 34, npc.showBubble); // sits above the name tag
     }
   }
 }
