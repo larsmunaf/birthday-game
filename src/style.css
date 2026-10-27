@@ -1,0 +1,48 @@
+:root {
+  --ink: #2a2035;
+  --paper: #f3e9d2;
+  --accent: #ff8a5c;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--paper); }
+body { font-family: 'Patrick Hand', 'Comic Sans MS', cursive; color: var(--ink); }
+canvas { display: block; width: 100vw; height: 100vh; }
+
+.hidden { display: none !important; }
+
+.overlay {
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  padding: 16px;
+  background: rgba(243, 233, 210, 0.35);
+}
+.card {
+  max-width: 520px;
+  text-align: center;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 18px 24px 16px 26px / 24px 16px 26px 18px; /* wonky hand-drawn box */
+  padding: 24px 28px;
+  box-shadow: 6px 7px 0 var(--ink);
+  animation: jiggle 0.5s steps(4) infinite;
+}
+h1 { margin: 0 0 8px; font-size: 2.4rem; line-height: 1.1; }
+p { font-size: 1.25rem; }
+.keys { font-size: 1rem; opacity: 0.75; }
+
+button {
+  font: inherit; font-size: 1.6rem;
+  color: var(--ink); background: var(--accent);
+  border: 3px solid var(--ink);
+  border-radius: 14px 10px 16px 9px;
+  padding: 6px 32px; cursor: pointer;
+  box-shadow: 3px 4px 0 var(--ink);
+}
+button:hover { transform: rotate(-2deg) scale(1.05); }
+
+@keyframes jiggle {
+  0% { transform: rotate(-0.4deg); }
+  25% { transform: rotate(0.3deg) translate(1px, 0); }
+  50% { transform: rotate(-0.2deg) translate(0, 1px); }
+  75% { transform: rotate(0.4deg); }
+}
