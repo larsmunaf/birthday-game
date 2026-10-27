@@ -46,3 +46,70 @@ button:hover { transform: rotate(-2deg) scale(1.05); }
   50% { transform: rotate(-0.2deg) translate(0, 1px); }
   75% { transform: rotate(0.4deg); }
 }
+
+h2 { margin: 6px 0 14px; font-size: 1.9rem; }
+
+/* ---------- HUD ---------- */
+#hud, #labels { position: fixed; inset: 0; pointer-events: none; }
+#hearts { position: absolute; top: 12px; left: 16px; font-size: 2.6rem; letter-spacing: 4px; }
+#hearts span { color: #b9b0c2; text-shadow: 2px 2px 0 var(--ink); display: inline-block; }
+#hearts span.full { color: #ff3d5e; animation: pop 0.5s ease-out; }
+#prompt {
+  position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%);
+  font-size: 1.6rem; transition: opacity 0.2s; white-space: nowrap;
+  background: var(--paper); border: 2px solid var(--ink); border-radius: 12px; padding: 4px 16px;
+}
+#toast {
+  position: absolute; top: 18%; left: 50%; transform: translateX(-50%);
+  font-size: 2rem; opacity: 0; text-align: center; width: max-content; max-width: calc(100vw - 32px);
+  text-shadow: 0 0 6px var(--paper), 0 0 12px var(--paper);
+}
+#toast.show { animation: toast 3s ease-out; }
+
+/* ---------- name tags & speech bubbles above heads ---------- */
+.label { position: absolute; left: 0; top: 0; white-space: nowrap; translate: -50% -100%; }
+.nametag {
+  font-size: 1.3rem; padding: 0 10px;
+  background: var(--paper); border: 2px solid var(--ink); border-radius: 10px 14px 9px 12px;
+}
+.bubble {
+  font-size: 1.5rem; padding: 6px 14px; margin-bottom: 14px;
+  background: #fff; border: 3px solid var(--ink); border-radius: 18px 22px 16px 24px;
+  box-shadow: 3px 3px 0 var(--ink);
+  animation: jiggle 0.5s steps(4) infinite;
+}
+.bubble::after { /* tail */
+  content: ''; position: absolute; left: 50%; bottom: -14px; margin-left: -8px;
+  border: 8px solid transparent; border-top: 10px solid var(--ink);
+}
+
+/* ---------- dialog ---------- */
+.dialog-card { max-width: 560px; width: 100%; }
+#dialog-name { font-size: 1.4rem; display: inline-block; padding: 0 12px; background: var(--accent); border: 2px solid var(--ink); border-radius: 10px; }
+#dialog-text { margin: 10px 0 0; }
+#dialog-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#dialog-answers button { font-size: 1.3rem; padding: 8px 12px; background: #fff; text-align: left; }
+#dialog-answers button:hover { background: #ffe9a8; }
+#dialog-feedback { min-height: 1.6em; margin: 10px 0 4px; color: #d63a4f; font-size: 1.5rem; }
+button.small { font-size: 1.1rem; padding: 2px 16px; background: var(--paper); box-shadow: 2px 2px 0 var(--ink); }
+.shake { animation: shake 0.4s; }
+@media (max-width: 480px) { #dialog-answers { grid-template-columns: 1fr; } }
+
+#win-text {
+  font-size: 1.8rem; margin-top: 12px; padding: 10px 16px;
+  border: 3px dashed var(--ink); border-radius: 12px; user-select: all;
+}
+
+@keyframes toast {
+  0% { opacity: 0; transform: translate(-50%, 10px); }
+  12%, 80% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; }
+}
+@keyframes pop { 0% { transform: scale(0.3); } 60% { transform: scale(1.5); } 100% { transform: scale(1); } }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px) rotate(-1deg); }
+  40% { transform: translateX(10px) rotate(1deg); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}

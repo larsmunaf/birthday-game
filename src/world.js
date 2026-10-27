@@ -30,9 +30,11 @@ export function heightAt(x, z) {
 }
 
 export class World {
-  constructor(scene) {
+  // reserved: [{ x, z, r }] areas kept free of trees/rocks (gift box, family members)
+  constructor(scene, reserved = []) {
     this.scene = scene;
     this.colliders = []; // { x, z, r }
+    this.reserved = reserved;
     this.rand = mulberry32(19);
     this.clouds = [];
 
@@ -73,7 +75,8 @@ export class World {
       const a = this.rand() * Math.PI * 2;
       const d = minDist + this.rand() * (maxDist - minDist);
       const x = Math.cos(a) * d, z = Math.sin(a) * d;
-      if (this.colliders.every((c) => Math.hypot(c.x - x, c.z - z) > c.r + clearance)) return { x, z };
+      const blocked = [...this.colliders, ...this.reserved].some((c) => Math.hypot(c.x - x, c.z - z) <= c.r + clearance);
+      if (!blocked) return { x, z };
     }
     return { x: 0, z: minDist };
   }

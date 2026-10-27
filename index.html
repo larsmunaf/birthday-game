@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,11 +10,38 @@
   <body>
     <canvas id="game"></canvas>
 
+    <div id="labels" class="hidden"></div>
+
+    <div id="hud" class="hidden">
+      <div id="hearts"></div>
+      <div id="prompt"></div>
+      <div id="toast"></div>
+    </div>
+
     <div id="intro" class="overlay">
       <div class="card">
-        <h1>Happy Birthday!</h1>
-        <p class="keys">WASD / arrows: move · Mouse: look · Space: jump · Shift: run · Wheel: zoom</p>
-        <button id="start">Start</button>
+        <h1 id="title">Alles Gute!</h1>
+        <p>Deine Familie hat ein riesiges Geschenk versteckt.<br />Löse ihre Rätsel, sammle alle ♥ und öffne es!</p>
+        <p class="keys">WASD / Pfeile: laufen · Maus: umsehen · Leertaste: springen · Shift: rennen · E: reden</p>
+        <button id="start">Los geht's!</button>
+      </div>
+    </div>
+
+    <div id="dialog" class="overlay hidden">
+      <div class="card dialog-card">
+        <div id="dialog-name"></div>
+        <p id="dialog-text"></p>
+        <h2 id="dialog-question"></h2>
+        <div id="dialog-answers"></div>
+        <p id="dialog-feedback"></p>
+        <button id="dialog-close" class="small">Später (Esc)</button>
+      </div>
+    </div>
+
+    <div id="win" class="overlay hidden">
+      <div class="card">
+        <h1 id="win-title"></h1>
+        <div id="win-text"></div>
       </div>
     </div>
 
