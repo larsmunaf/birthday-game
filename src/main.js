@@ -9,10 +9,10 @@ import { Input } from './input.js';
 
 const canvas = document.querySelector('#game');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
+renderer.setClearColor(0x000000, 0); // transparent = sky, filled in by the paper pass
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
 const scene = new THREE.Scene();
-scene.background = shared.uPaper.value;
 const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 400);
 const composer = createComposer(renderer, scene, camera);
 

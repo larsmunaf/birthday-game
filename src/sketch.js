@@ -13,7 +13,8 @@ export const shared = {
   uPixelRatio: { value: 1 },
   uLightDir: { value: new THREE.Vector3(0.5, 0.85, 0.35).normalize() },
   uInk: { value: new THREE.Color('#2a2035') },
-  uPaper: { value: new THREE.Color('#f3e9d2') },
+  uSkyHorizon: { value: new THREE.Color('#b4dcf5') }, // also the fog colour
+  uSkyTop: { value: new THREE.Color('#3b8de0') },
   uFogNear: { value: 45 },
   uFogFar: { value: 120 },
 };
@@ -69,7 +70,7 @@ const sketchFrag = /* glsl */ `
   uniform vec3 uShadeTint;
   uniform vec3 uLightDir;
   uniform vec3 uInk;
-  uniform vec3 uPaper;
+  uniform vec3 uSkyHorizon;
   uniform float uHatch;
   uniform float uEmissive;
   uniform float uSeed;
@@ -122,7 +123,7 @@ const sketchFrag = /* glsl */ `
     col = mix(col, uInk, ink * 0.65 * uHatch * (1.0 - uEmissive));
 
     float d = distance(vW, cameraPosition);
-    col = mix(col, uPaper, smoothstep(uFogNear, uFogFar, d));
+    col = mix(col, uSkyHorizon, smoothstep(uFogNear, uFogFar, d));
     gl_FragColor = vec4(col, 1.0);
   }
 `;
@@ -152,13 +153,13 @@ const outlineVert = /* glsl */ `
 
 const outlineFrag = /* glsl */ `
   uniform vec3 uInk;
-  uniform vec3 uPaper;
+  uniform vec3 uSkyHorizon;
   uniform float uFogNear;
   uniform float uFogFar;
   varying vec3 vW;
   void main() {
     float d = distance(vW, cameraPosition);
-    gl_FragColor = vec4(mix(uInk, uPaper, smoothstep(uFogNear, uFogFar, d)), 1.0);
+    gl_FragColor = vec4(mix(uInk, uSkyHorizon, smoothstep(uFogNear, uFogFar, d)), 1.0);
   }
 `;
 

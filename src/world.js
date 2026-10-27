@@ -123,7 +123,7 @@ export class World {
       const cloud = new THREE.Group();
       const puffs = 3 + Math.floor(this.rand() * 3);
       for (let p = 0; p < puffs; p++) {
-        const puff = sketchMesh(geo, '#ffffff', { wobble: 0.08, hatch: 0.4, shadeTint: '#c8c4e8', thickness: 2.5 });
+        const puff = sketchMesh(geo, '#ffffff', { wobble: 0.08, hatch: 0.4, shadeTint: '#c9dcf0', thickness: 2.5 });
         const s = 1.8 + this.rand() * 1.6;
         puff.scale.set(s * 1.3, s, s);
         puff.position.set(p * 2.4 - puffs, this.rand() * 0.8, (this.rand() - 0.5) * 1.5);
