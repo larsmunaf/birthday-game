@@ -10,6 +10,13 @@ const HUG_TIME = 2.8;
 const $ = (s) => document.querySelector(s);
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
+// set an element's text, drawing every ♥ in red
+const escape = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+export function setText(el, text) {
+  const html = escape(text).replace(/♥|❤️?/g, '<span class="heart">♥</span>');
+  if (el.innerHTML !== html) el.innerHTML = html;
+}
+
 export class Game {
   constructor({ scene, world, player, input, camera, canvas }) {
     Object.assign(this, { player, input, camera, canvas });
@@ -45,7 +52,7 @@ export class Game {
   makeLabel(cls, text) {
     const el = document.createElement('div');
     el.className = `label ${cls}`;
-    el.textContent = text;
+    setText(el, text);
     $('#labels').appendChild(el);
     return el;
   }
@@ -69,7 +76,7 @@ export class Game {
 
   toast(text) {
     const el = this.ui.toast;
-    el.textContent = text;
+    setText(el, text);
     el.classList.remove('show');
     void el.offsetWidth; // restart animation
     el.classList.add('show');
@@ -90,8 +97,8 @@ export class Game {
 
     const { def } = npc;
     this.ui.name.textContent = def.name;
-    this.ui.text.textContent = def.greeting;
-    this.ui.question.textContent = def.puzzle.question;
+    setText(this.ui.text, def.greeting);
+    setText(this.ui.question, def.puzzle.question);
     this.ui.feedback.textContent = '';
     this.ui.answers.innerHTML = '';
     def.puzzle.answers.forEach((answer, i) => {
@@ -119,7 +126,7 @@ export class Game {
       this.closeDialog();
       this.startHug(npc);
     } else {
-      this.ui.feedback.textContent = pick(npc.def.wrong);
+      setText(this.ui.feedback, pick(npc.def.wrong));
       const card = this.ui.dialog.firstElementChild;
       card.classList.remove('shake');
       void card.offsetWidth;
@@ -187,8 +194,8 @@ export class Game {
     setTimeout(() => {
       document.exitPointerLock?.();
       this.input.enabled = false;
-      $('#win-title').textContent = CONFIG.gift.title;
-      $('#win-text').textContent = CONFIG.gift.text;
+      setText($('#win-title'), CONFIG.gift.title);
+      setText($('#win-text'), CONFIG.gift.text);
       $('#win').classList.remove('hidden');
     }, 2500);
   }
@@ -215,7 +222,7 @@ export class Game {
       }
     }
 
-    this.ui.prompt.textContent = prompt;
+    setText(this.ui.prompt, prompt);
     this.ui.prompt.style.opacity = prompt ? 1 : 0;
 
     for (const npc of this.npcs) npc.update(dt, this.player);

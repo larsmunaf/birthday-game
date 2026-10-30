@@ -52,7 +52,14 @@ const sketchVert = /* glsl */ `
   #ifdef USE_COLOR
     varying vec3 vColor;
   #endif
+  #ifdef SKETCH_MAP
+    uniform vec2 uMapOffset;
+    varying vec2 vUv;
+  #endif
   void main() {
+    #ifdef SKETCH_MAP
+      vUv = uv + uMapOffset;
+    #endif
     vec3 p = position + wobbleOffset(position, uSeed) * uWobble;
     vec4 wp = modelMatrix * vec4(p, 1.0);
     vW = wp.xyz;
@@ -98,10 +105,18 @@ const sketchFrag = /* glsl */ `
     return line * gap;
   }
 
+  #ifdef SKETCH_MAP
+    uniform sampler2D uMap;
+    varying vec2 vUv;
+  #endif
+
   void main() {
     vec3 base = uColor;
     #ifdef USE_COLOR
       base *= vColor;
+    #endif
+    #ifdef SKETCH_MAP
+      base *= texture2D(uMap, vUv).rgb; // e.g. a shirt print
     #endif
     vec3 n = normalize(vN);
     if (!gl_FrontFacing) n = -n;
@@ -172,13 +187,18 @@ export function createSketchMaterial({
   seed = Math.random() * 100,
   vertexColors = false,
   side = THREE.FrontSide,
+  map = null,                 // optional texture, multiplied with color
+  mapOffset = [0, 0],
 } = {}) {
   return new THREE.ShaderMaterial({
     vertexShader: sketchVert,
     fragmentShader: sketchFrag,
     vertexColors,
     side,
+    defines: map ? { SKETCH_MAP: '' } : {},
     uniforms: {
+      uMap: { value: map },
+      uMapOffset: { value: new THREE.Vector2(...mapOffset) },
       ...shared,
       uColor: { value: new THREE.Color(color) },
       uShadeTint: { value: new THREE.Color(shadeTint) },

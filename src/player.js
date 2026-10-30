@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createCharacter, animateCharacter, createShadow } from './character.js';
 import { heightAt } from './world.js';
+import { createOccupyMarsTexture } from './shirtPrint.js';
 
 const GRAVITY = -32;
 const JUMP_SPEED = 12;
@@ -18,7 +19,12 @@ export class Player {
     this.pose = null;    // overrides the automatic pose (e.g. 'hug')
 
     // the birthday boy, with a party hat
-    this.char = createCharacter({ hat: 'cone', hatColor: '#6b4bc2', hair: '#5a3a22' });
+    this.char = createCharacter({
+      hat: 'cone', hatColor: '#6b4bc2',
+      hair: '#1c1a1e',                 // black hair
+      shirt: '#f6f6f2', print: createOccupyMarsTexture(),
+      pants: '#4a74b8', pantsWidth: 1.35, // wide blue jeans
+    });
     this.root = this.char.root;
     scene.add(this.root);
 

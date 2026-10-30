@@ -2,7 +2,14 @@
 import * as THREE from 'three';
 import { sketchMesh, shared } from './sketch.js';
 
-const torsoGeo = new THREE.CapsuleGeometry(0.42, 0.5, 4, 10);
+const torsoGeo = new THREE.CapsuleGeometry(0.42, 0.5, 8, 16);
+{
+  // v proportional to height (CapsuleGeometry spaces v per ring, which stretches prints),
+  // so 1 texture pixel is equally tall and wide on the shirt
+  const pos = torsoGeo.attributes.position, uv = torsoGeo.attributes.uv;
+  const half = 0.25 + 0.42;
+  for (let i = 0; i < uv.count; i++) uv.setY(i, (pos.getY(i) + half) / (2 * half));
+}
 const headGeo = new THREE.SphereGeometry(0.42, 16, 12);
 const limbGeo = new THREE.CapsuleGeometry(0.13, 0.4, 3, 8);
 const eyeGeo = new THREE.SphereGeometry(0.06, 8, 6);
@@ -12,6 +19,7 @@ const beardGeo = new THREE.SphereGeometry(0.3, 12, 8);
 const coneHatGeo = new THREE.ConeGeometry(0.36, 0.5, 8);
 const capGeo = new THREE.SphereGeometry(0.46, 14, 8, 0, Math.PI * 2, 0, Math.PI * 0.42);
 const brimGeo = new THREE.BoxGeometry(0.5, 0.06, 0.4);
+const collarGeo = new THREE.TorusGeometry(0.24, 0.07, 6, 16);
 const shadowGeo = new THREE.CircleGeometry(0.6, 20).rotateX(-Math.PI / 2);
 
 export function createShadow() {
@@ -22,21 +30,31 @@ export function createShadow() {
 }
 
 /**
- * look: { shirt, pants, skin, hat: 'cone' | 'cap' | 'none', hatColor, hair, longHair, beard, scale }
+ * look: { shirt, pants, skin, hat: 'cone' | 'cap' | 'none', hatColor, hair, longHair, beard, scale,
+ *         print (texture on the shirt front), sleeves (colour -> long sleeves), pantsWidth, collar }
  */
 export function createCharacter(look = {}) {
   const o = {
     shirt: '#ff8a5c', pants: '#5d7bd6', skin: '#ffd9b3',
     hat: 'none', hatColor: '#6b4bc2', hair: null, longHair: false, beard: null, scale: 1,
+    print: null, sleeves: null, pantsWidth: 1, collar: false,
     ...look,
   };
   const root = new THREE.Group();
   const body = new THREE.Group(); // bobs / squashes, root only moves
   root.add(body);
 
-  const torso = sketchMesh(torsoGeo, o.shirt);
+  // mapOffset 0.5: centre the print on the front of the capsule
+  const torso = sketchMesh(torsoGeo, o.shirt, o.print ? { map: o.print, mapOffset: [0.5, 0] } : {});
   torso.position.y = 1.05;
   body.add(torso);
+
+  if (o.collar) {
+    const collar = sketchMesh(collarGeo, o.shirt, { thickness: 1.4 });
+    collar.rotation.x = Math.PI / 2;
+    collar.position.y = 1.58;
+    body.add(collar);
+  }
 
   const head = sketchMesh(headGeo, o.skin);
   head.position.y = 1.85;
@@ -81,11 +99,12 @@ export function createCharacter(look = {}) {
     head.add(brim);
   }
 
-  const makeLimb = (color, x, y) => {
+  const makeLimb = (color, x, y, width = 1) => {
     const pivot = new THREE.Group();
     pivot.position.set(x, y, 0);
     const limb = sketchMesh(limbGeo, color, { thickness: 1.6 });
     limb.position.y = -0.3;
+    limb.scale.set(width, 1, width);
     pivot.add(limb);
     body.add(pivot);
     return pivot;
@@ -94,10 +113,10 @@ export function createCharacter(look = {}) {
   root.scale.setScalar(o.scale);
   return {
     root, body, head,
-    legL: makeLimb(o.pants, -0.2, 0.6),
-    legR: makeLimb(o.pants, 0.2, 0.6),
-    armL: makeLimb(o.skin, -0.52, 1.35),
-    armR: makeLimb(o.skin, 0.52, 1.35),
+    legL: makeLimb(o.pants, -0.2 * Math.max(1, o.pantsWidth * 0.9), 0.6, o.pantsWidth),
+    legR: makeLimb(o.pants, 0.2 * Math.max(1, o.pantsWidth * 0.9), 0.6, o.pantsWidth),
+    armL: makeLimb(o.sleeves ?? o.skin, -0.52, 1.35),
+    armR: makeLimb(o.sleeves ?? o.skin, 0.52, 1.35),
     walkPhase: 0, speed01: 0, squash: 0, time: 0,
   };
 }

@@ -27,13 +27,14 @@ export const FAMILY = [
       correct: 3,
     },
     wrong: ['Falsch! 😜', 'Nö. Nochmal!', 'Echt jetzt?', 'Haha, nein.'],
-    hugText: '❤️ Hab dich lieb, Bruder!',
+    hugText: '♥ Hab dich lieb, Bruder!',
   },
   {
     id: 'mama',
     name: 'Mama',
     position: [-18, -10],
-    look: { shirt: '#d46bb8', pants: '#5a4a8a', hair: '#c9913d', longHair: true, scale: 1.05 },
+    // brown/grey hair, blue pullover, blue jeans
+    look: { shirt: '#4d7cc7', sleeves: '#4d7cc7', pants: '#4f74ad', hair: '#7b6a5c', longHair: true, scale: 1.05 },
     greeting: 'Hallo mein Schatz! Ich hab ein Rätsel für dich.',
     // TODO: real puzzle from Mama
     puzzle: {
@@ -42,13 +43,14 @@ export const FAMILY = [
       correct: 0,
     },
     wrong: ['Nicht ganz, Schatz!', 'Versuch es nochmal!'],
-    hugText: '❤️ Hab dich lieb, mein Schatz!',
+    hugText: '♥ Hab dich lieb, mein Schatz!',
   },
   {
     id: 'papa',
     name: 'Papa',
     position: [6, -24],
-    look: { shirt: '#4f8fd6', pants: '#4a4a4a', hair: '#7a6a5a', beard: '#7a6a5a', hat: 'cap', hatColor: '#d9533b', scale: 1.1 },
+    // black/grey hair, dark polo, dark jeans
+    look: { shirt: '#2e3340', collar: true, pants: '#33476b', hair: '#45454b', scale: 1.1 },
     greeting: 'Hey Großer! Mal sehen, ob du das weißt.',
     // TODO: real puzzle from Papa
     puzzle: {
@@ -57,6 +59,6 @@ export const FAMILY = [
       correct: 0,
     },
     wrong: ['Nee, nee!', 'Denk nochmal nach!'],
-    hugText: '❤️ Stolz auf dich, Großer!',
+    hugText: '♥ Stolz auf dich, Großer!',
   },
 ];

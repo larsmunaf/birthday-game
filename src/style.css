@@ -47,6 +47,9 @@ button:hover { transform: rotate(-2deg) scale(1.05); }
   75% { transform: rotate(0.4deg); }
 }
 
+/* every ♥ in text is red */
+.heart { color: #ff3d5e; }
+
 h2 { margin: 6px 0 14px; font-size: 1.9rem; }
 
 /* ---------- HUD ---------- */
