@@ -19,7 +19,7 @@ export const FAMILY = [
     id: 'lars',
     name: 'Lars',
     position: [16, 8],
-    look: { shirt: '#5cc28a', pants: '#3d4a6b', hair: '#6b4226' },
+    look: { shirt: '#f6f6f2', pants: '#3d4a6b', hair: '#1c1a1e' }, // black hair, white shirt
     greeting: 'Na, Geburtstagskind? Beantworte mir eine Frage!',
     puzzle: {
       question: 'Wie alt bist du?',
@@ -34,7 +34,7 @@ export const FAMILY = [
     name: 'Mama',
     position: [-18, -10],
     // brown/grey hair, blue pullover, dark blue jeans
-    look: { shirt: '#4d7cc7', pants: '#2b3f6e', hair: '#7b6a5c', longHair: true, scale: 1.05 },
+    look: { shirt: '#4d7cc7', pants: '#2b3f6e', hair: '#7b6a5c', scale: 1.05 },
     greeting: 'Hallo mein kleiner Großer! Ich hab ein Rätsel für dich.',
     // TODO: real puzzle from Mama
     puzzle: {
@@ -49,8 +49,8 @@ export const FAMILY = [
     id: 'papa',
     name: 'Papa',
     position: [6, -24],
-    // black/grey hair, slight beard, dark polo, dark jeans
-    look: { shirt: '#2e3340', collar: true, pants: '#33476b', hair: '#45454b', stubble: '#978a84', scale: 1.1 },
+    // black/grey hair, dark polo, dark jeans
+    look: { shirt: '#2e3340', collar: true, pants: '#33476b', hair: '#45454b', scale: 1.1 },
     greeting: 'Hey Großer! Mal sehen, ob du das weißt.',
     // TODO: real puzzle from Papa
     puzzle: {
