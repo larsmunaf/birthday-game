@@ -1,15 +1,15 @@
-import * as THREE from 'three';
-import './style.css';
-import { shared, BOIL_FPS } from './sketch.js';
-import { createComposer } from './postfx.js';
-import { World } from './world.js';
-import { Player } from './player.js';
-import { ThirdPersonCamera } from './thirdPersonCamera.js';
-import { Input } from './input.js';
-import { Game } from './game.js';
-import { CONFIG, FAMILY } from './config.js';
+import * as THREE from "three";
+import "./style.css";
+import { shared, BOIL_FPS } from "./sketch.js";
+import { createComposer } from "./postfx.js";
+import { World } from "./world.js";
+import { Player } from "./player.js";
+import { ThirdPersonCamera } from "./thirdPersonCamera.js";
+import { Input } from "./input.js";
+import { Game } from "./game.js";
+import { CONFIG, FAMILY } from "./config.js";
 
-const canvas = document.querySelector('#game');
+const canvas = document.querySelector("#game");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
 renderer.setClearColor(0x000000, 0); // transparent = sky, filled in by the paper pass
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -20,7 +20,10 @@ const composer = createComposer(renderer, scene, camera);
 
 const input = new Input(canvas);
 // keep trees and rocks away from the gift box and the family
-const reserved = [{ x: 0, z: 0, r: 7 }, ...FAMILY.map((f) => ({ x: f.position[0], z: f.position[1], r: 3 }))];
+const reserved = [
+  { x: 0, z: 0, r: 7 },
+  ...FAMILY.map((f) => ({ x: f.position[0], z: f.position[1], r: 3 })),
+];
 const world = new World(scene, reserved);
 const player = new Player(scene);
 const tpc = new ThirdPersonCamera(camera);
@@ -29,20 +32,22 @@ const game = new Game({ scene, world, player, input, camera, canvas });
 if (import.meta.env.DEV) Object.assign(window, { game, player, tpc }); // handy for debugging in the console
 
 const $ = (s) => document.querySelector(s);
-$('#title').textContent = `Alles Gute zum ${CONFIG.age}., ${CONFIG.brother}!`;
-$('#start').addEventListener('click', () => {
-  $('#intro').classList.add('hidden');
-  $('#hud').classList.remove('hidden');
-  $('#labels').classList.remove('hidden');
+$("#title").textContent =
+  `Alles Gute zum Geburtstag, lieber ${CONFIG.brother}!`;
+$("#start").addEventListener("click", () => {
+  $("#intro").classList.add("hidden");
+  $("#hud").classList.remove("hidden");
+  $("#labels").classList.remove("hidden");
   input.enabled = true;
   started = true;
   canvas.requestPointerLock?.();
 });
 let started = false;
-$('#restart').addEventListener('click', () => location.reload());
+$("#restart").addEventListener("click", () => location.reload());
 
 function resize() {
-  const w = innerWidth, h = innerHeight;
+  const w = innerWidth,
+    h = innerHeight;
   renderer.setSize(w, h, false);
   composer.setPixelRatio(renderer.getPixelRatio());
   composer.setSize(w, h);
@@ -51,7 +56,7 @@ function resize() {
   renderer.getDrawingBufferSize(shared.uResolution.value);
   shared.uPixelRatio.value = renderer.getPixelRatio();
 }
-addEventListener('resize', resize);
+addEventListener("resize", resize);
 resize();
 
 const clock = new THREE.Clock();
