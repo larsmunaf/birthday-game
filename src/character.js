@@ -16,6 +16,8 @@ const eyeGeo = new THREE.SphereGeometry(0.06, 8, 6);
 const hairCapGeo = new THREE.SphereGeometry(0.45, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.5);
 const longHairGeo = new THREE.CapsuleGeometry(0.34, 0.45, 4, 10);
 const beardGeo = new THREE.SphereGeometry(0.3, 12, 8);
+// thin shell over the lower front of the head: cheeks + chin (front is +z, i.e. phi = PI/2)
+const stubbleGeo = new THREE.SphereGeometry(0.445, 16, 8, Math.PI / 2 - 1.1, 2.2, Math.PI * 0.6, Math.PI * 0.32);
 const coneHatGeo = new THREE.ConeGeometry(0.36, 0.5, 8);
 const capGeo = new THREE.SphereGeometry(0.46, 14, 8, 0, Math.PI * 2, 0, Math.PI * 0.42);
 const brimGeo = new THREE.BoxGeometry(0.5, 0.06, 0.4);
@@ -30,13 +32,13 @@ export function createShadow() {
 }
 
 /**
- * look: { shirt, pants, skin, hat: 'cone' | 'cap' | 'none', hatColor, hair, longHair, beard, scale,
+ * look: { shirt, pants, skin, hat: 'cone' | 'cap' | 'none', hatColor, hair, longHair, beard, stubble, scale,
  *         print (texture on the shirt front), sleeves (colour -> long sleeves), pantsWidth, collar }
  */
 export function createCharacter(look = {}) {
   const o = {
     shirt: '#ff8a5c', pants: '#5d7bd6', skin: '#ffd9b3',
-    hat: 'none', hatColor: '#6b4bc2', hair: null, longHair: false, beard: null, scale: 1,
+    hat: 'none', hatColor: '#6b4bc2', hair: null, longHair: false, beard: null, stubble: null, scale: 1,
     print: null, sleeves: null, pantsWidth: 1, collar: false,
     ...look,
   };
@@ -84,6 +86,11 @@ export function createCharacter(look = {}) {
     beard.scale.set(1, 0.75, 0.6);
     beard.position.set(0, -0.24, 0.24);
     head.add(beard);
+  }
+  if (o.stubble) {
+    // a light beard: no outline, just a tinted patch
+    const stubble = sketchMesh(stubbleGeo, o.stubble, { outline: false, hatch: 1.4 });
+    head.add(stubble);
   }
   if (o.hat === 'cone') {
     const hat = sketchMesh(coneHatGeo, o.hatColor);

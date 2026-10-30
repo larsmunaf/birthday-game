@@ -10,11 +10,12 @@ export function createOccupyMarsTexture() {
   canvas.width = W;
   canvas.height = H;
   const g = canvas.getContext('2d');
-  g.fillStyle = '#ffffff';
+  g.fillStyle = '#25222a'; // black shirt
   g.fillRect(0, 0, W, H);
 
   const cx = W / 2;
   const ink = '#1d1b22';
+  const text = '#f4f1ea'; // white lettering
 
   // little Mars, slightly wonky like a hand drawing
   const my = H * 0.25;
@@ -35,7 +36,7 @@ export function createOccupyMarsTexture() {
   g.stroke();
 
   // wide-spaced lettering
-  g.fillStyle = ink;
+  g.fillStyle = text;
   g.textAlign = 'center';
   g.textBaseline = 'middle';
   const font = '"Arial Black", "Helvetica Neue", Impact, Arial, sans-serif';

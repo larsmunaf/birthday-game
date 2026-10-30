@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { createCharacter, animateCharacter, createShadow } from './character.js';
 import { heightAt } from './world.js';
 import { createOccupyMarsTexture } from './shirtPrint.js';
+import { FAMILY } from './config.js';
 
 const GRAVITY = -32;
 const JUMP_SPEED = 12;
@@ -18,13 +19,10 @@ export class Player {
     this.frozen = false; // true while talking / hugging: no input movement
     this.pose = null;    // overrides the automatic pose (e.g. 'hug')
 
-    // the birthday boy, with a party hat
-    this.char = createCharacter({
-      hat: 'cone', hatColor: '#6b4bc2',
-      hair: '#1c1a1e',                 // black hair
-      shirt: '#f6f6f2', print: createOccupyMarsTexture(),
-      pants: '#4a74b8', pantsWidth: 1.35, // wide blue jeans
-    });
+    // the birthday boy: looks like Lars, but in a black "Occupy Mars" shirt
+    // (shirt colour is white because the print texture carries the black)
+    const lars = FAMILY.find((f) => f.id === 'lars').look;
+    this.char = createCharacter({ ...lars, shirt: '#ffffff', print: createOccupyMarsTexture() });
     this.root = this.char.root;
     scene.add(this.root);
 

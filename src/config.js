@@ -33,24 +33,24 @@ export const FAMILY = [
     id: 'mama',
     name: 'Mama',
     position: [-18, -10],
-    // brown/grey hair, blue pullover, blue jeans
-    look: { shirt: '#4d7cc7', sleeves: '#4d7cc7', pants: '#4f74ad', hair: '#7b6a5c', longHair: true, scale: 1.05 },
-    greeting: 'Hallo mein Schatz! Ich hab ein Rätsel für dich.',
+    // brown/grey hair, blue pullover, dark blue jeans
+    look: { shirt: '#4d7cc7', pants: '#2b3f6e', hair: '#7b6a5c', longHair: true, scale: 1.05 },
+    greeting: 'Hallo mein kleiner Großer! Ich hab ein Rätsel für dich.',
     // TODO: real puzzle from Mama
     puzzle: {
       question: 'Platzhalter-Frage von Mama?',
       answers: ['Richtig', 'Falsch', 'Falsch', 'Falsch'],
       correct: 0,
     },
-    wrong: ['Nicht ganz, Schatz!', 'Versuch es nochmal!'],
-    hugText: '♥ Hab dich lieb, mein Schatz!',
+    wrong: ['Nicht ganz, mein kleiner Großer!', 'Versuch es nochmal!'],
+    hugText: '♥ Hab dich lieb, mein kleiner Großer!',
   },
   {
     id: 'papa',
     name: 'Papa',
     position: [6, -24],
-    // black/grey hair, dark polo, dark jeans
-    look: { shirt: '#2e3340', collar: true, pants: '#33476b', hair: '#45454b', scale: 1.1 },
+    // black/grey hair, slight beard, dark polo, dark jeans
+    look: { shirt: '#2e3340', collar: true, pants: '#33476b', hair: '#45454b', stubble: '#978a84', scale: 1.1 },
     greeting: 'Hey Großer! Mal sehen, ob du das weißt.',
     // TODO: real puzzle from Papa
     puzzle: {
