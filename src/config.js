@@ -35,14 +35,23 @@ export const FAMILY = [
     position: [-18, -10],
     // brown/grey hair, blue pullover, dark blue jeans
     look: { shirt: '#4d7cc7', pants: '#2b3f6e', hair: '#7b6a5c', scale: 1.05 },
-    greeting: 'Hallo mein kleiner Großer! Ich hab ein Rätsel für dich.',
-    // TODO: real puzzle from Mama
+    // Quest: find her lost (ringing) Fairphone, bring it back, then take a sharp photo together
     puzzle: {
-      question: 'Platzhalter-Frage von Mama?',
-      answers: ['Richtig', 'Falsch', 'Falsch', 'Falsch'],
-      correct: 0,
+      type: 'phone',
+      phonePosition: [-38, 16], // where the phone lies in the grass
+      intro: 'Oh nein, mein kleiner Großer! Ich hab mein Fairphone verloren! Ich ruf es mal an – hör genau hin, wo es klingelt!',
+      introButton: 'Klar, ich such es!',
+      searchToast: 'Hör genau hin: Wo klingelt es? ♪',
+      waiting: 'Hast du mein Handy schon gefunden? Es klingelt irgendwo da draußen!',
+      waitingButton: 'Ich such weiter!',
+      foundToast: 'Fairphone gefunden! Bring es zu Mama.',
+      returned: 'Mein Fairphone! Danke, mein kleiner Großer! Komm, lass uns ein Foto zusammen machen. Die Kamera ist leider... naja. Drück ab, wenn das Bild scharf ist!',
+      photoButton: '📸 Foto machen',
+      badPhoto: ['Verwackelt. Typisch Fairphone! 😅', 'Ist das ein Daumen?!', 'Hmm... künstlerisch wertvoll. Nochmal!', 'Alles unscharf! Nochmal!'],
+      badPhotoButton: 'Nochmal versuchen',
+      goodPhoto: 'Perfekt! Das kommt ins Familienalbum ♥',
+      goodPhotoButton: 'Schön! ♥',
     },
-    wrong: ['Nicht ganz, mein kleiner Großer!', 'Versuch es nochmal!'],
     hugText: '♥ Hab dich lieb, mein kleiner Großer!',
   },
   {

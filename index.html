@@ -47,6 +47,32 @@
       </div>
     </div>
 
+    <!-- Mama's photo: Fairphone camera viewfinder -->
+    <div id="photo" class="hidden">
+      <div class="viewfinder">
+        <div class="vf-label">📷 Fairphone-Kamera</div>
+        <div class="vf-corner tl"></div><div class="vf-corner tr"></div>
+        <div class="vf-corner bl"></div><div class="vf-corner br"></div>
+      </div>
+      <div class="vf-bottom">
+        <div class="focus-meter"><span>Schärfe</span><div class="focus-track"><div id="focus-bar"></div></div></div>
+        <div class="shutter"></div>
+        <div class="vf-hint">Leertaste / Klick: abdrücken, wenn das Bild scharf ist!</div>
+      </div>
+      <div id="flash"></div>
+    </div>
+
+    <div id="polaroid" class="overlay hidden">
+      <div class="polaroid-card">
+        <div class="polaroid-photo">
+          <img id="polaroid-img" alt="Foto" />
+          <div id="polaroid-thumb"></div>
+        </div>
+        <p id="polaroid-caption"></p>
+        <button id="polaroid-btn"></button>
+      </div>
+    </div>
+
     <div id="win" class="overlay hidden">
       <div class="card">
         <h1 id="win-title"></h1>

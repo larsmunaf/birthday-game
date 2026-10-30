@@ -7,6 +7,7 @@ export class NPC {
     this.def = def;
     this.solved = false;
     this.pose = null; // set by the game (e.g. 'hug')
+    this.forceFacing = null; // angle to look at instead of the player
 
     const [x, z] = def.position;
     this.position = new THREE.Vector3(x, heightAt(x, z), z);
@@ -30,9 +31,10 @@ export class NPC {
     const dz = player.position.z - this.position.z;
     const dist = Math.hypot(dx, dz);
 
-    // turn to face the player when they come close
-    if (dist < 10) {
-      const diff = Math.atan2(Math.sin(Math.atan2(dx, dz) - this.facing), Math.cos(Math.atan2(dx, dz) - this.facing));
+    // turn to face the player when they come close (or wherever a quest says, e.g. into a camera)
+    const target = this.forceFacing ?? (dist < 10 ? Math.atan2(dx, dz) : null);
+    if (target !== null) {
+      const diff = Math.atan2(Math.sin(target - this.facing), Math.cos(target - this.facing));
       this.facing += diff * Math.min(1, dt * 5);
     }
     // wave at the player until the puzzle is solved

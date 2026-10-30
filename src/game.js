@@ -2,6 +2,7 @@
 import * as THREE from 'three';
 import { NPC } from './npc.js';
 import { GiftBox } from './giftbox.js';
+import { PhoneQuest } from './phoneQuest.js';
 import { CONFIG, FAMILY } from './config.js';
 
 const TALK_DIST = 3.2;
@@ -19,8 +20,10 @@ export function setText(el, text) {
 
 export class Game {
   constructor({ scene, world, player, input, camera, canvas }) {
-    Object.assign(this, { player, input, camera, canvas });
-    this.state = 'explore'; // explore | dialog | hug | won
+    Object.assign(this, { scene, player, input, camera, canvas });
+    this.state = 'explore'; // explore | dialog | hug | photo | won
+    this.cameraOverride = null; // { position, target } while a quest takes over the camera
+    this.snapshotCallback = null;
     this.time = 0;
     this.hearts = 0;
 
@@ -32,9 +35,14 @@ export class Game {
       npc.showBubble = false; // once solved, the heart bubble stays for good
       return npc;
     });
+    // puzzles that are more than a quiz get their own controller
+    for (const npc of this.npcs) {
+      if (npc.def.puzzle.type === 'phone') npc.quest = new PhoneQuest(this, npc);
+    }
 
     this.box = new GiftBox(scene, FAMILY);
     world.addCollider(0, 0, this.box.radius);
+    world.cameraBlockers.push({ center: new THREE.Vector3(0, this.box.root.position.y + 2.6, 0), r: 4.2 });
 
     this.ui = {
       hearts: $('#hearts'), prompt: $('#prompt'), toast: $('#toast'),
@@ -57,10 +65,10 @@ export class Game {
     return el;
   }
 
-  placeLabel(el, worldPos, offsetY, visible) {
+  placeLabel(el, worldPos, offsetY, visible, maxDist = 40) {
     const p = worldPos.clone().project(this.camera);
     const dist = worldPos.distanceTo(this.camera.position);
-    if (!visible || p.z > 1 || dist > 40) { el.style.display = 'none'; return; }
+    if (!visible || p.z > 1 || dist > maxDist) { el.style.display = 'none'; return; }
     el.style.display = '';
     const x = (p.x * 0.5 + 0.5) * innerWidth;
     const y = (-p.y * 0.5 + 0.5) * innerHeight - offsetY;
@@ -89,24 +97,37 @@ export class Game {
   // ---------- dialog ----------
 
   openDialog(npc) {
+    if (npc.quest) return npc.quest.talk();
+    const { def } = npc;
+    this.showCard(npc, {
+      text: def.greeting,
+      question: def.puzzle.question,
+      buttons: def.puzzle.answers.map((answer, i) => ({ label: answer, prefix: `${'ABCD'[i]}:`, onClick: () => this.answer(i) })),
+    });
+  }
+
+  // generic dialog card: some text, an optional question, and buttons [{ label, prefix?, onClick }]
+  showCard(npc, { text = '', question = '', buttons = [] }) {
     this.state = 'dialog';
     this.talking = npc;
     this.player.frozen = true;
     this.input.enabled = false;
     document.exitPointerLock?.();
 
-    const { def } = npc;
-    this.ui.name.textContent = def.name;
-    setText(this.ui.text, def.greeting);
-    setText(this.ui.question, def.puzzle.question);
+    this.ui.name.textContent = npc.def.name;
+    setText(this.ui.text, text);
+    setText(this.ui.question, question);
+    this.ui.question.style.display = question ? '' : 'none';
     this.ui.feedback.textContent = '';
     this.ui.answers.innerHTML = '';
-    def.puzzle.answers.forEach((answer, i) => {
+    this.ui.answers.classList.toggle('single', buttons.length === 1);
+    this.cardButtons = buttons.map(({ label, prefix, onClick }) => {
       const btn = document.createElement('button');
-      btn.innerHTML = `<b>${'ABCD'[i]}:</b> `;
-      btn.append(answer);
-      btn.addEventListener('click', () => this.answer(i));
+      if (prefix) btn.innerHTML = `<b>${prefix}</b> `;
+      btn.append(label);
+      btn.addEventListener('click', onClick);
       this.ui.answers.appendChild(btn);
+      return btn;
     });
     this.ui.dialog.classList.remove('hidden');
   }
@@ -117,7 +138,7 @@ export class Game {
     const i = ['KeyA', 'KeyB', 'KeyC', 'KeyD'].indexOf(e.code);
     const j = ['Digit1', 'Digit2', 'Digit3', 'Digit4'].indexOf(e.code);
     const idx = i >= 0 ? i : j;
-    if (idx >= 0 && idx < this.talking.def.puzzle.answers.length) this.answer(idx);
+    if (idx >= 0 && idx < this.cardButtons.length) this.cardButtons[idx].click();
   }
 
   answer(i) {
@@ -134,8 +155,13 @@ export class Game {
     }
   }
 
-  closeDialog() {
+  // hide the card without handing control back (e.g. when a quest takes over)
+  hideDialog() {
     this.ui.dialog.classList.add('hidden');
+  }
+
+  closeDialog() {
+    this.hideDialog();
     this.state = 'explore';
     this.player.frozen = false;
     this.input.enabled = true;
@@ -213,7 +239,7 @@ export class Game {
       const near = this.npcs.find((n) => !n.solved && Math.hypot(n.position.x - p.x, n.position.z - p.z) < TALK_DIST);
       const boxDist = Math.hypot(p.x, p.z);
       if (near) {
-        prompt = `E: Mit ${near.def.name} reden`;
+        prompt = near.quest?.promptText() ?? `E: Mit ${near.def.name} reden`;
         if (this.input.justPressed('KeyE')) this.openDialog(near);
       } else if (boxDist < this.box.radius + 2.5) {
         const missing = this.npcs.length - this.hearts;
@@ -225,7 +251,10 @@ export class Game {
     setText(this.ui.prompt, prompt);
     this.ui.prompt.style.opacity = prompt ? 1 : 0;
 
-    for (const npc of this.npcs) npc.update(dt, this.player);
+    for (const npc of this.npcs) {
+      npc.quest?.update(dt);
+      npc.update(dt, this.player);
+    }
     this.box.update(dt, this.time, this.hearts === this.npcs.length);
   }
 
@@ -236,6 +265,21 @@ export class Game {
       npc.headPosition(head);
       this.placeLabel(npc.tag, head, 0, true);
       this.placeLabel(npc.bubble, head, 34, npc.showBubble); // sits above the name tag
+      npc.quest?.updateLabels();
     }
+  }
+
+  // ---------- camera snapshot (for the photo quest) ----------
+
+  requestSnapshot(callback) {
+    this.snapshotCallback = callback;
+  }
+
+  // called right after rendering, while the frame is still in the canvas
+  afterRender() {
+    if (!this.snapshotCallback) return;
+    const cb = this.snapshotCallback;
+    this.snapshotCallback = null;
+    cb(this.canvas.toDataURL('image/jpeg', 0.9));
   }
 }

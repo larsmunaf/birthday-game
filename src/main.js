@@ -23,6 +23,12 @@ const input = new Input(canvas);
 const reserved = [
   { x: 0, z: 0, r: 7 },
   ...FAMILY.map((f) => ({ x: f.position[0], z: f.position[1], r: 3 })),
+  // spots where quest items lie (e.g. Mama's phone)
+  ...FAMILY.filter((f) => f.puzzle.phonePosition).map((f) => ({
+    x: f.puzzle.phonePosition[0],
+    z: f.puzzle.phonePosition[1],
+    r: 2,
+  })),
 ];
 const world = new World(scene, reserved);
 const player = new Player(scene);
@@ -73,9 +79,16 @@ renderer.setAnimationLoop(() => {
     tpc.yaw += dt * 0.15; // slow orbit on the title screen
   }
   world.update(dt);
-  tpc.update(dt, input, player.position);
+  if (game.cameraOverride) {
+    // a quest (e.g. the photo) holds the camera
+    camera.position.copy(game.cameraOverride.position);
+    camera.lookAt(game.cameraOverride.target);
+  } else {
+    tpc.update(dt, input, player.position, world.cameraBlockers);
+  }
   game.updateLabels(dt);
   input.endFrame();
 
   composer.render();
+  game.afterRender();
 });

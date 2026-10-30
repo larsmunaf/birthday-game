@@ -34,6 +34,7 @@ export class World {
   constructor(scene, reserved = []) {
     this.scene = scene;
     this.colliders = []; // { x, z, r }
+    this.cameraBlockers = []; // { center: Vector3, r } spheres the camera must not enter
     this.reserved = reserved;
     this.rand = mulberry32(19);
     this.clouds = [];
@@ -105,6 +106,10 @@ export class World {
       tree.rotation.y = this.rand() * Math.PI * 2;
       tree.position.set(x, heightAt(x, z) - 0.1, z);
       this.scene.add(tree);
+      tree.updateMatrixWorld(true);
+      for (const leaf of tree.children.slice(1)) {
+        this.cameraBlockers.push({ center: leaf.getWorldPosition(new THREE.Vector3()), r: 1.7 * leaf.scale.x * s });
+      }
       this.addCollider(x, z, 0.5 * s);
     }
 
@@ -116,6 +121,7 @@ export class World {
       rock.rotation.set(this.rand(), this.rand() * 6, this.rand());
       rock.position.set(x, heightAt(x, z) + s * 0.3, z);
       this.scene.add(rock);
+      this.cameraBlockers.push({ center: rock.position.clone(), r: s * 1.25 });
       this.addCollider(x, z, s * 1.0);
     }
   }

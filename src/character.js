@@ -129,7 +129,7 @@ export function createCharacter(look = {}) {
 }
 
 /**
- * pose: 'walk' (default, uses targetSpeed), 'jump', 'hug', 'wave'
+ * pose: 'walk' (default, uses targetSpeed), 'jump', 'hug', 'wave', 'selfie', 'cheese'
  */
 export function animateCharacter(c, dt, { targetSpeed = 0, pose = 'walk' } = {}) {
   c.time += dt;
@@ -153,6 +153,15 @@ export function animateCharacter(c, dt, { targetSpeed = 0, pose = 'walk' } = {})
     c.armL.rotation.set(-1.3, 0, 0.45);
     c.armR.rotation.set(-1.3, 0, -0.45);
     c.body.rotation.z = Math.sin(c.time * 5) * 0.1;
+  } else if (pose === 'selfie') {
+    // right arm stretched up and forward (holding the phone),
+    // left arm out sideways, around the shoulder of whoever stands on the left
+    c.armR.rotation.set(-2.3, 0, -0.15);
+    c.armL.rotation.set(-0.2, 0, -1.15);
+  } else if (pose === 'cheese') {
+    // left arm up in front (thumbs up), right arm out sideways around the other one's shoulder
+    c.armL.rotation.set(-1.4, 0, 0.3);
+    c.armR.rotation.set(-0.2, 0, 1.15);
   } else if (pose === 'wave') {
     c.armR.rotation.z = 2.5 + Math.sin(c.time * 9) * 0.35;
   }
