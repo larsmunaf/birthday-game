@@ -19,10 +19,10 @@ export class Player {
     this.frozen = false; // true while talking / hugging: no input movement
     this.pose = null;    // overrides the automatic pose (e.g. 'hug')
 
-    // the birthday boy: looks like Lars, but in a black "Occupy Mars" shirt
+    // the birthday boy: looks like Lars, but with brown hair and a black "Occupy Mars" shirt
     // (shirt colour is white because the print texture carries the black)
     const lars = FAMILY.find((f) => f.id === 'lars').look;
-    this.char = createCharacter({ ...lars, shirt: '#ffffff', print: createOccupyMarsTexture() });
+    this.char = createCharacter({ ...lars, hair: '#6b4226', shirt: '#ffffff', print: createOccupyMarsTexture() });
     this.root = this.char.root;
     scene.add(this.root);
 
